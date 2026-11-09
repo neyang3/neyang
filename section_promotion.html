@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f85606">
+    <title>NEYANG — ໂປຣໂມຊັນ</title>
+    <script src="./navbar.js" defer></script>
+    <style>
+        :root {
+            color-scheme: light;
+            --brand: #f85606;
+            --brand-dark: #dc4800;
+            --brand-soft: #fff1e8;
+            --ink: #242424;
+            --muted: #757575;
+            --paper: #f5f5f5;
+            --line: #ececec;
+            font-family: "Noto Sans Lao", "Phetsarath OT", "Leelawadee UI", sans-serif;
+        }
+        * { box-sizing: border-box; }
+        body { margin: 0; background: var(--paper); color: var(--ink); line-height: 1.6; }
+        button { font: inherit; cursor: pointer; }
+        a { color: inherit; text-decoration: none; }
+        main { width: min(100% - 32px,1000px); margin: 22px auto 50px; }
+        .hero { position: relative; display: flex; min-height: 220px; align-items: center; overflow: hidden; border-radius: 12px; padding: 28px clamp(20px,5vw,56px); background: linear-gradient(112deg,#fff1e9 0%,#ffe1ce 51%,#ffc7a6 100%); }
+        .hero-copy { position: relative; z-index: 1; max-width: 580px; }
+        .eyebrow { color: var(--brand-dark); font-size: 12px; font-weight: 800; letter-spacing: .04em; }
+        h1 { margin: 6px 0; font-size: clamp(26px,4vw,40px); line-height: 1.35; }
+        .hero p { margin: 0 0 16px; color: #68544a; font-size: 13px; }
+        .hero-art { position: absolute; top: 50%; right: 7%; font-size: clamp(76px,13vw,132px); filter: drop-shadow(0 14px 12px rgba(117,55,17,.15)); transform: translateY(-50%) rotate(-8deg); }
+        .button { display: inline-flex; min-height: 38px; align-items: center; justify-content: center; border: 0; border-radius: 5px; padding: 0 15px; background: var(--brand); color: white; font-size: 12px; font-weight: 700; }
+        .button:hover { background: var(--brand-dark); }
+        .section-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 22px 0 12px; }
+        .section-heading h2 { margin: 0; font-size: 18px; }
+        .section-heading span { color: var(--muted); font-size: 11px; }
+        .coupon-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; }
+        .coupon { position: relative; display: flex; min-height: 142px; flex-direction: column; justify-content: space-between; overflow: hidden; border: 1px solid #ffd1bc; border-radius: 9px; padding: 15px; background: white; }
+        .coupon::before, .coupon::after { position: absolute; top: 50%; width: 18px; height: 18px; border: 1px solid #ffd1bc; border-radius: 50%; background: var(--paper); content: ""; transform: translateY(-50%); }
+        .coupon::before { left: -10px; }
+        .coupon::after { right: -10px; }
+        .coupon-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+        .discount { color: var(--brand); font-size: 27px; font-weight: 900; line-height: 1.2; }
+        .discount small { font-size: 13px; }
+        .coupon-label { border-radius: 20px; padding: 3px 8px; background: var(--brand-soft); color: var(--brand-dark); font-size: 10px; font-weight: 700; white-space: nowrap; }
+        .coupon p { margin: 5px 0 10px; color: var(--muted); font-size: 11px; }
+        .coupon-bottom { display: flex; align-items: center; justify-content: space-between; gap: 8px; border-top: 1px dashed #ffd1bc; padding-top: 9px; }
+        .coupon-code { color: var(--ink); font-size: 11px; font-weight: 800; letter-spacing: .05em; }
+        .copy-button { border: 1px solid #ffd1bc; border-radius: 4px; padding: 5px 9px; background: #fff8f4; color: var(--brand); font-size: 10px; font-weight: 700; }
+        .offer-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+        .offer { display: flex; min-height: 116px; align-items: center; gap: 15px; border-radius: 9px; padding: 16px 20px; background: white; }
+        .offer-icon { display: grid; width: 54px; height: 54px; flex: 0 0 auto; place-items: center; border-radius: 50%; background: var(--brand-soft); font-size: 27px; }
+        .offer h3 { margin: 0 0 3px; font-size: 14px; }
+        .offer p { margin: 0; color: var(--muted); font-size: 11px; }
+        .toast { position: fixed; z-index: 10; right: 18px; bottom: 18px; border-radius: 6px; padding: 10px 14px; background: #242424; color: white; font-size: 12px; opacity: 0; pointer-events: none; transform: translateY(8px); transition: opacity .2s,transform .2s; }
+        .toast.visible { opacity: 1; transform: translateY(0); }
+        @media (max-width: 900px) {
+            body { padding-bottom: calc(70px + env(safe-area-inset-bottom)); }
+            main { width: calc(100% - 20px); margin-top: 12px; }
+            .hero { min-height: 190px; padding: 22px 17px; }
+            .hero-copy { max-width: 68%; }
+            .hero-art { right: 2%; font-size: clamp(70px,22vw,110px); }
+            .hero p { font-size: 11px; }
+            .coupon-grid { grid-template-columns: 1fr; gap: 9px; }
+            .coupon { min-height: 128px; }
+            .offer-grid { grid-template-columns: 1fr; gap: 9px; }
+            .section-heading { margin-top: 17px; }
+            .section-heading h2 { font-size: 16px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+        }
+    </style>
+</head>
+<body>
+    <neyang-navbar active="promotion" home-view="community"></neyang-navbar>
+    <main>
+        <section class="hero" aria-labelledby="promotion-title">
+            <div class="hero-copy">
+                <span class="eyebrow">NEYANG SPECIAL DEALS</span>
+                <h1 id="promotion-title">ໂປຣໂມຊັນພິເສດ ຄຸ້ມກວ່າທຸກມື້</h1>
+                <p>ເລືອກໃຊ້ຄູປອງ ແລະຮັບດີລພິເສດໃນຮ້ານ NEYANG.</p>
+                <button class="button" type="button" data-view="store" data-target="products">ເລືອກຊື້ສິນຄ້າ</button>
+            </div>
+            <span class="hero-art" aria-hidden="true">🎁</span>
+        </section>
+        <section aria-labelledby="coupons-title">
+            <div class="section-heading"><h2 id="coupons-title">ຄູປອງສ່ວນຫຼຸດ</h2><span>ໃຊ້ລະຫັດໃນໜ້າຊຳລະເງິນ</span></div>
+            <div class="coupon-grid">
+                <article class="coupon"><div><div class="coupon-top"><strong class="discount">10<small>% OFF</small></strong><span class="coupon-label">ລູກຄ້າໃໝ່</span></div><p>ສັ່ງຊື້ຄົບ ฿ 300 ຂຶ້ນໄປ</p></div><div class="coupon-bottom"><span class="coupon-code">WELCOME10</span><button class="copy-button" type="button" data-copy="WELCOME10">ຄັດລອກລະຫັດ</button></div></article>
+                <article class="coupon"><div><div class="coupon-top"><strong class="discount">฿50 <small>OFF</small></strong><span class="coupon-label">ດີລປະຈຳວັນ</span></div><p>ສັ່ງຊື້ຄົບ ฿ 500 ຂຶ້ນໄປ</p></div><div class="coupon-bottom"><span class="coupon-code">SAVE50</span><button class="copy-button" type="button" data-copy="SAVE50">ຄັດລອກລະຫັດ</button></div></article>
+                <article class="coupon"><div><div class="coupon-top"><strong class="discount">ສົ່ງ<small>ຟຣີ</small></strong><span class="coupon-label">ຈຳກັດເວລາ</span></div><p>ສັ່ງຊື້ສິນຄ້າໃດກໍໄດ້</p></div><div class="coupon-bottom"><span class="coupon-code">FREESHIP</span><button class="copy-button" type="button" data-copy="FREESHIP">ຄັດລອກລະຫັດ</button></div></article>
+            </div>
+        </section>
+        <section aria-labelledby="offers-title">
+            <div class="section-heading"><h2 id="offers-title">ສິດພິເສດໃນການຊື້</h2></div>
+            <div class="offer-grid">
+                <article class="offer"><span class="offer-icon" aria-hidden="true">🚚</span><div><h3>ສົ່ງຟຣີເມື່ອຊື້ຄົບ</h3><p>ຮັບສິດສົ່ງຟຣີເມື່ອຍອດສັ່ງຊື້ຄົບ 500,000 ກີບ.</p></div></article>
+                <article class="offer"><span class="offer-icon" aria-hidden="true">💳</span><div><h3>ຈ່າຍງ່າຍ ຊື້ສະບາຍ</h3><p>ເລືອກວິທີຊຳລະເງິນໄດ້ຫຼາຍແບບຕາມຕ້ອງການ.</p></div></article>
+            </div>
+        </section>
+    </main>
+    <div class="toast" role="status" aria-live="polite"></div>
+    <script>
+        const toast = document.querySelector(".toast");
+        let toastTimer;
+
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add("visible");
+            window.clearTimeout(toastTimer);
+            toastTimer = window.setTimeout(() => toast.classList.remove("visible"), 2200);
+        }
+
+        function openView(view, target) {
+            if (window.parent === window) {
+                if (view === "community") window.location.href = "./section_home.html";
+                else if (view === "profile") window.location.href = "./section_profile.html";
+                else if (view === "store") window.location.href = `./index.html${target ? `#${target}` : ""}`;
+                return;
+            }
+            const origin = window.location.origin === "null" ? "*" : window.location.origin;
+            window.parent.postMessage({ type: "neyang-open-view", view, target }, origin);
+        }
+
+        document.querySelector(".hero [data-view]").addEventListener("click", (event) => {
+            openView(event.currentTarget.dataset.view, event.currentTarget.dataset.target);
+        });
+        document.querySelectorAll("[data-copy]").forEach((button) => {
+            button.addEventListener("click", async () => {
+                try {
+                    await navigator.clipboard.writeText(button.dataset.copy);
+                    showToast(`ຄັດລອກລະຫັດ ${button.dataset.copy} ແລ້ວ`);
+                } catch (error) {
+                    showToast("ຄັດລອກບໍ່ສຳເລັດ. ກະລຸນາເລືອກລະຫັດແລ້ວຄັດລອກ.");
+                }
+            });
+        });
+    </script>
+</body>
+</html>

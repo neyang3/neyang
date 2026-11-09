@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f5f5f5">
+    <title>NEYANG — ສິນຄ້າ</title>
+    <script src="./navbar.js" defer></script>
+    <style>
+        :root {
+            color-scheme: light;
+            --brand: #f85606;
+            --ink: #242424;
+            --muted: #757575;
+            --line: #ececec;
+            --shadow: 0 8px 26px rgba(27,27,27,.08);
+            font-family: "Noto Sans Lao", "Phetsarath OT", "Leelawadee UI", sans-serif;
+        }
+        * { box-sizing: border-box; }
+        body { margin: 0; background: transparent; color: var(--ink); line-height: 1.6; }
+        .flash-sale { overflow: hidden; border-radius: 8px; background: white; }
+        .section-heading { display: flex; min-height: 56px; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 18px; }
+        .section-heading h1 { margin: 0; font-size: 18px; font-weight: 700; }
+        .countdown { display: inline-flex; align-items: center; gap: 5px; color: var(--muted); font-size: 12px; white-space: nowrap; }
+        .countdown b { border-radius: 3px; padding: 2px 6px; background: #333; color: white; font-size: 12px; }
+        .product-grid { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 12px; padding: 0 14px 16px; }
+        .product-card { min-width: 0; overflow: hidden; border: 1px solid #f0f0f0; border-radius: 5px; background: white; transition: box-shadow .18s,transform .18s; }
+        .product-card:hover { box-shadow: var(--shadow); transform: translateY(-3px); }
+        .product-image { position: relative; display: grid; aspect-ratio: 1/.86; place-items: center; overflow: hidden; background: var(--tile-bg,#f8f3ee); }
+        .product-image > span:first-child { font-size: clamp(48px,7vw,78px); filter: drop-shadow(0 10px 7px rgba(0,0,0,.1)); }
+        .discount-badge { position: absolute; top: 9px; right: 9px; border-radius: 2px; padding: 3px 6px; background: #fff1e8; color: var(--brand); font-size: 11px; font-weight: 700; }
+        .product-info { padding: 10px; }
+        .product-name { display: -webkit-box; min-height: 42px; overflow: hidden; margin: 0 0 7px; font-size: 12px; line-height: 1.7; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; }
+        .product-price { color: var(--brand); font-size: 17px; font-weight: 700; }
+        .product-old-price { margin-left: 4px; color: #999; font-size: 10px; text-decoration: line-through; }
+        .product-rating { display: flex; align-items: center; gap: 5px; margin-top: 4px; color: #888; font-size: 10px; }
+        .stars { color: #f6a623; letter-spacing: 1px; }
+        .add-button { width: 100%; margin-top: 9px; border: 1px solid #ffd1bc; border-radius: 3px; padding: 6px; background: #fff8f4; color: var(--brand); font: inherit; font-size: 11px; cursor: pointer; }
+        .add-button:hover { border-color: var(--brand); background: var(--brand); color: white; }
+        .empty-state { display: none; padding: 32px; color: var(--muted); text-align: center; }
+        .empty-state.is-visible { display: block; }
+        .toast { position: fixed; z-index: 2; right: 12px; bottom: 12px; max-width: calc(100% - 24px); border-radius: 5px; padding: 10px 14px; background: #222; color: white; font-size: 12px; opacity: 0; pointer-events: none; transform: translateY(8px); transition: opacity .2s,transform .2s; }
+        .toast.is-visible { opacity: 1; transform: translateY(0); }
+        @media (max-width: 900px) { .product-grid { grid-template-columns: repeat(3,minmax(0,1fr)); } }
+        @media (max-width: 600px) {
+            .section-heading { min-height: 48px; padding: 9px 12px; }
+            .section-heading h1 { font-size: 15px; }
+            .countdown { gap: 3px; font-size: 10px; }
+            .countdown b { padding: 2px 4px; font-size: 10px; }
+            .product-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; padding: 0 9px 10px; }
+            .product-name { font-size: 11px; }
+            .product-price { font-size: 15px; }
+            .toast { bottom: 8px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+        }
+    </style>
+</head>
+<body>
+    <neyang-navbar active="store" home-view="store" embedded></neyang-navbar>
+    <section class="flash-sale" aria-labelledby="flash-title">
+        <div class="section-heading">
+            <h1 id="flash-title">⚡ ດີລຮ້ອນປະຈຳວັນ</h1>
+            <div class="countdown"><span>ສິ້ນສຸດໃນ</span> <b id="timer-hours">02</b>:<b id="timer-minutes">00</b>:<b id="timer-seconds">00</b></div>
+        </div>
+        <div class="product-grid">
+            <article class="product-card" data-category="tech" data-search="ຫູຟັງ bluetooth wireless ເທັກໂນໂລຢີ">
+                <div class="product-image" style="--tile-bg:#eef4ff"><span>🎧</span><span class="discount-badge">-30%</span></div>
+                <div class="product-info"><p class="product-name">ຫູຟັງ Bluetooth ໄຮ້ສາຍ ສຽງຄົມຊັດ</p><div><span class="product-price">฿ 189</span><span class="product-old-price">฿ 270</span></div><div class="product-rating"><span class="stars">★★★★★</span><span>(128)</span></div><button class="add-button" type="button">ເພີ່ມໃສ່ກະຕ່າ</button></div>
+            </article>
+            <article class="product-card" data-category="home" data-search="ຂວດນ້ຳ ເກັບອຸນຫະພູມ ເຮືອນ ຄົວ">
+                <div class="product-image" style="--tile-bg:#edf7f1"><span>🧴</span><span class="discount-badge">-20%</span></div>
+                <div class="product-info"><p class="product-name">ຂວດນ້ຳເກັບອຸນຫະພູມ ສະແຕນເລດ 500ml</p><div><span class="product-price">฿ 240</span><span class="product-old-price">฿ 300</span></div><div class="product-rating"><span class="stars">★★★★★</span><span>(86)</span></div><button class="add-button" type="button">ເພີ່ມໃສ່ກະຕ່າ</button></div>
+            </article>
+            <article class="product-card" data-category="fashion" data-search="ເສື້ອຍືດ ແຟຊັ່ນ ເສື້ອ">
+                <div class="product-image" style="--tile-bg:#fff3ec"><span>👕</span><span class="discount-badge">-25%</span></div>
+                <div class="product-info"><p class="product-name">ເສື້ອຍືດຜ້ານຸ້ມ ໃສ່ສະບາຍ ຫຼາຍສີ</p><div><span class="product-price">฿ 150</span><span class="product-old-price">฿ 200</span></div><div class="product-rating"><span class="stars">★★★★☆</span><span>(54)</span></div><button class="add-button" type="button">ເພີ່ມໃສ່ກະຕ່າ</button></div>
+            </article>
+            <article class="product-card" data-category="beauty" data-search="ຄຣີມ ບຳລຸງຜິວ ຄວາມງາມ">
+                <div class="product-image" style="--tile-bg:#fff0f4"><span>🧴</span><span class="discount-badge">-15%</span></div>
+                <div class="product-info"><p class="product-name">ຄຣີມບຳລຸງຜິວ ສູດອ່ອນໂຍນ ຂະໜາດ 50g</p><div><span class="product-price">฿ 255</span><span class="product-old-price">฿ 300</span></div><div class="product-rating"><span class="stars">★★★★★</span><span>(203)</span></div><button class="add-button" type="button">ເພີ່ມໃສ່ກະຕ່າ</button></div>
+            </article>
+            <article class="product-card" data-category="food" data-search="ກາເຟ ດຣິບ ອາຫານ ເຄື່ອງດື່ມ">
+                <div class="product-image" style="--tile-bg:#f8f1e7"><span>☕</span><span class="discount-badge">-10%</span></div>
+                <div class="product-info"><p class="product-name">ກາເຟດຣິບຄົ່ວສົດ ກິ່ນຫອມລະມຸນ 10 ຊອງ</p><div><span class="product-price">฿ 135</span><span class="product-old-price">฿ 150</span></div><div class="product-rating"><span class="stars">★★★★★</span><span>(97)</span></div><button class="add-button" type="button">ເພີ່ມໃສ່ກະຕ່າ</button></div>
+            </article>
+            <article class="product-card" data-category="tech" data-search="smartwatch ນາລິກາ ອັດສະລິຍະ ເທັກໂນໂລຢີ">
+                <div class="product-image" style="--tile-bg:#f1efff"><span>⌚</span><span class="discount-badge">-35%</span></div>
+                <div class="product-info"><p class="product-name">ສາຍຮັດຂໍ້ມືອັດສະລິຍະ ນັບກ້າວ ແລະວັດຊີບພະຈອນ</p><div><span class="product-price">฿ 390</span><span class="product-old-price">฿ 600</span></div><div class="product-rating"><span class="stars">★★★★☆</span><span>(72)</span></div><button class="add-button" type="button">ເພີ່ມໃສ່ກະຕ່າ</button></div>
+            </article>
+            <article class="product-card" data-category="home" data-search="ໂຄມໄຟ ໄຟຕັ້ງໂຕະ ເຮືອນ">
+                <div class="product-image" style="--tile-bg:#fff7e7"><span>💡</span><span class="discount-badge">-18%</span></div>
+                <div class="product-info"><p class="product-name">ໂຄມໄຟຕັ້ງໂຕະ LED ແສງຖະໜອມສາຍຕາ</p><div><span class="product-price">฿ 205</span><span class="product-old-price">฿ 250</span></div><div class="product-rating"><span class="stars">★★★★★</span><span>(61)</span></div><button class="add-button" type="button">ເພີ່ມໃສ່ກະຕ່າ</button></div>
+            </article>
+            <article class="product-card" data-category="fashion" data-search="ກະເປົາ ແຟຊັ່ນ ສະພາຍ">
+                <div class="product-image" style="--tile-bg:#f8f0ed"><span>👜</span><span class="discount-badge">-22%</span></div>
+                <div class="product-info"><p class="product-name">ກະເປົາສະພາຍຂ້າງ ດີຊາຍຮຽບງ່າຍ</p><div><span class="product-price">฿ 312</span><span class="product-old-price">฿ 400</span></div><div class="product-rating"><span class="stars">★★★★☆</span><span>(45)</span></div><button class="add-button" type="button">ເພີ່ມໃສ່ກະຕ່າ</button></div>
+            </article>
+            <article class="product-card" data-category="beauty" data-search="ລິບສະຕິກ ເຄື່ອງສຳອາງ ຄວາມງາມ">
+                <div class="product-image" style="--tile-bg:#fff0f4"><span>💄</span><span class="discount-badge">-12%</span></div>
+                <div class="product-info"><p class="product-name">ລິບສະຕິກເນື້ອກຳມະຢີ ສີສວຍຕິດທົນ</p><div><span class="product-price">฿ 220</span><span class="product-old-price">฿ 250</span></div><div class="product-rating"><span class="stars">★★★★★</span><span>(112)</span></div><button class="add-button" type="button">ເພີ່ມໃສ່ກະຕ່າ</button></div>
+            </article>
+            <article class="product-card" data-category="food" data-search="ຊາ ຊາຂຽວ ເຄື່ອງດື່ມ">
+                <div class="product-image" style="--tile-bg:#eff7eb"><span>🍵</span><span class="discount-badge">-16%</span></div>
+                <div class="product-info"><p class="product-name">ຊາຂຽວຫອມລະມຸນ ຄັດພິເສດ 20 ຊອງ</p><div><span class="product-price">฿ 168</span><span class="product-old-price">฿ 200</span></div><div class="product-rating"><span class="stars">★★★★☆</span><span>(38)</span></div><button class="add-button" type="button">ເພີ່ມໃສ່ກະຕ່າ</button></div>
+            </article>
+        </div>
+        <p class="empty-state" id="empty-state">ບໍ່ພົບສິນຄ້າທີ່ຄົ້ນຫາ. ລອງຄຳຄົ້ນຫາອື່ນ.</p>
+    </section>
+    <div class="toast" role="status" aria-live="polite"></div>
+    <script>
+        const cards = [...document.querySelectorAll(".product-card")];
+        const emptyState = document.querySelector("#empty-state");
+        const toast = document.querySelector(".toast");
+        let activeCategory = "all";
+        let searchQuery = "";
+        let cartQuantity = 0;
+        let toastTimer;
+
+        function filterProducts() {
+            let visibleCount = 0;
+            cards.forEach((card) => {
+                const matchesCategory = activeCategory === "all" || card.dataset.category === activeCategory;
+                const text = `${card.dataset.search} ${card.querySelector(".product-name").textContent}`.toLocaleLowerCase();
+                const matchesQuery = !searchQuery || text.includes(searchQuery);
+                card.hidden = !(matchesCategory && matchesQuery);
+                if (!card.hidden) visibleCount += 1;
+            });
+            emptyState.classList.toggle("is-visible", visibleCount === 0);
+            resizeFrame();
+        }
+
+        function resizeFrame() {
+            if (window.parent === window) return;
+            window.parent.postMessage({ type: "neyang-product-resize", height: document.documentElement.scrollHeight }, "*");
+        }
+
+        document.querySelectorAll(".add-button").forEach((button) => {
+            button.addEventListener("click", () => {
+                cartQuantity += 1;
+                const productName = button.closest(".product-card").querySelector(".product-name").textContent;
+                toast.textContent = `ເພີ່ມ “${productName}” ໃສ່ກະຕ່າແລ້ວ`;
+                toast.classList.add("is-visible");
+                window.clearTimeout(toastTimer);
+                toastTimer = window.setTimeout(() => toast.classList.remove("is-visible"), 2400);
+                if (window.parent !== window) {
+                    window.parent.postMessage({ type: "neyang-cart-update", quantity: cartQuantity }, "*");
+                }
+            });
+        });
+
+        window.addEventListener("message", (event) => {
+            if (event.source !== window.parent || event.origin !== window.location.origin) return;
+            if (event.data?.type !== "neyang-product-filter") return;
+            searchQuery = String(event.data.query || "").trim().toLocaleLowerCase();
+            activeCategory = ["all", "tech", "fashion", "home", "beauty", "food"].includes(event.data.category)
+                ? event.data.category
+                : "all";
+            filterProducts();
+        });
+
+        let remainingSeconds = 2 * 60 * 60;
+        window.setInterval(() => {
+            remainingSeconds = Math.max(0, remainingSeconds - 1);
+            document.querySelector("#timer-hours").textContent = String(Math.floor(remainingSeconds / 3600)).padStart(2, "0");
+            document.querySelector("#timer-minutes").textContent = String(Math.floor((remainingSeconds % 3600) / 60)).padStart(2, "0");
+            document.querySelector("#timer-seconds").textContent = String(remainingSeconds % 60).padStart(2, "0");
+        }, 1000);
+        window.addEventListener("load", resizeFrame);
+        window.addEventListener("resize", resizeFrame);
+        new ResizeObserver(resizeFrame).observe(document.querySelector(".flash-sale"));
+    </script>
+</body>
+</html>

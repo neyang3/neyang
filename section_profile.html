@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#fff1e9">
+    <title>NEYANG — ໂປຣໄຟລ໌ຂອງຂ້ອຍ</title>
+    <script src="./navbar.js" defer></script>
+    <style>
+        :root {
+            color-scheme: light;
+            --brand: #f85606;
+            --brand-dark: #dc4800;
+            --brand-light: #fff1e8;
+            --ink: #242424;
+            --muted: #757575;
+            --paper: #f5f5f5;
+            --line: #ececec;
+            --white: #fff;
+            font-family: "Noto Sans Lao", "Phetsarath OT", "Leelawadee UI", sans-serif;
+        }
+        * { box-sizing: border-box; }
+        body { margin: 0; background: var(--paper); color: var(--ink); line-height: 1.6; }
+        button, input { font: inherit; }
+        button { cursor: pointer; }
+        a { color: inherit; text-decoration: none; }
+        .page { width: min(100% - 32px, 1000px); margin: 24px auto 60px; }
+        .profile-card { overflow: hidden; border: 1px solid var(--line); border-radius: 10px; background: white; box-shadow: 0 2px 9px rgba(0,0,0,.04); }
+        .cover { position: relative; height: 190px; background: linear-gradient(112deg,#fff1e9 0%,#ffe1ce 51%,#ffc7a6 100%); }
+        .cover::after { position: absolute; right: 12%; bottom: -42px; width: 180px; height: 180px; border: 1px solid rgba(255,255,255,.55); border-radius: 50%; content: ""; }
+        .cover::before { position: absolute; right: 18%; bottom: -12px; width: 110px; height: 110px; border: 1px solid rgba(255,255,255,.45); border-radius: 50%; content: ""; }
+        .profile-main { position: relative; display: flex; min-height: 128px; align-items: center; gap: 18px; padding: 14px 24px 18px 180px; }
+        .avatar { position: absolute; top: -62px; left: 24px; display: grid; width: 142px; height: 142px; place-items: center; border: 5px solid white; border-radius: 50%; background: linear-gradient(145deg,#ffb98f,#f85606); color: white; font-size: 48px; font-weight: 800; }
+        .profile-identity { flex: 1; }
+        .profile-identity h1 { margin: 0; font-size: 24px; }
+        .profile-identity p { margin: 3px 0 0; color: var(--muted); font-size: 12px; }
+        .profile-actions { display: flex; gap: 8px; }
+        .button { min-height: 38px; border: 0; border-radius: 5px; padding: 0 14px; background: #fff1e8; color: #242424; font-size: 12px; font-weight: 700; }
+        .button.primary { background: var(--brand); color: white; }
+        .button.primary:hover { background: var(--brand-dark); }
+        .profile-tabs { display: flex; gap: 4px; border-top: 1px solid var(--line); padding: 0 18px; }
+        .profile-tab { min-height: 48px; border: 0; border-bottom: 3px solid transparent; padding: 0 15px; background: transparent; color: var(--muted); font-size: 12px; font-weight: 700; }
+        .profile-tab.active { border-bottom-color: var(--brand); color: var(--brand); }
+        .profile-layout { display: grid; grid-template-columns: minmax(240px,.8fr) minmax(0,1.5fr); gap: 16px; margin-top: 18px; }
+        .panel { border: 1px solid var(--line); border-radius: 9px; padding: 18px; background: white; }
+        .panel h2 { margin: 0 0 13px; font-size: 16px; }
+        .intro { margin: 0 0 15px; color: var(--muted); font-size: 12px; }
+        .info-row { display: flex; align-items: center; gap: 10px; border-top: 1px solid #f1f1f1; padding: 11px 0; font-size: 12px; }
+        .info-icon { width: 24px; color: var(--brand); text-align: center; }
+        .stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-top: 12px; }
+        .stat { border-radius: 7px; padding: 11px 5px; background: #fff8f4; text-align: center; }
+        .stat strong { display: block; color: var(--brand); font-size: 18px; }
+        .stat span { color: var(--muted); font-size: 10px; }
+        .order { display: flex; align-items: center; gap: 12px; border: 1px solid #f0f0f0; border-radius: 7px; padding: 11px; }
+        .order + .order { margin-top: 9px; }
+        .order-image { display: grid; width: 54px; height: 54px; flex: 0 0 auto; place-items: center; border-radius: 6px; background: #fff2e9; font-size: 28px; }
+        .order-description { min-width: 0; flex: 1; }
+        .order-description strong { display: block; overflow: hidden; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+        .order-description span { color: var(--muted); font-size: 10px; }
+        .order-status { border-radius: 20px; padding: 4px 9px; background: #eaf8ef; color: #258044; font-size: 10px; white-space: nowrap; }
+        .order-status.pending { background: #fff5df; color: #a76b00; }
+        .tab-panel[hidden] { display: none; }
+        .empty-tab { padding: 32px 12px; color: var(--muted); font-size: 12px; text-align: center; }
+        .toast { position: fixed; z-index: 10; right: 18px; bottom: 18px; border-radius: 6px; padding: 10px 14px; background: #242424; color: white; font-size: 12px; opacity: 0; pointer-events: none; transform: translateY(8px); transition: opacity .2s,transform .2s; }
+        .toast.visible { opacity: 1; transform: translateY(0); }
+        @media (max-width: 680px) {
+            body { padding-bottom: calc(70px + env(safe-area-inset-bottom)); }
+            .page { width: calc(100% - 20px); margin-top: 12px; }
+            .cover { height: 130px; }
+            .profile-main { min-height: 120px; align-items: flex-end; gap: 8px; padding: 43px 12px 12px; }
+            .avatar { top: -48px; left: 12px; width: 100px; height: 100px; font-size: 34px; }
+            .profile-identity h1 { font-size: 19px; }
+            .profile-identity p { font-size: 10px; }
+            .profile-actions { flex-direction: column; gap: 5px; }
+            .button { min-height: 32px; padding: 0 9px; font-size: 10px; }
+            .profile-tabs { overflow-x: auto; padding: 0 5px; }
+            .profile-tab { min-height: 44px; flex: 0 0 auto; padding: 0 12px; font-size: 11px; }
+            .profile-layout { grid-template-columns: minmax(0,1fr); gap: 10px; margin-top: 10px; }
+            .panel { padding: 14px; }
+            .order { gap: 8px; padding: 8px; }
+            .order-image { width: 44px; height: 44px; font-size: 23px; }
+            .order-status { padding: 3px 6px; font-size: 9px; }
+        }
+        @media (max-width: 360px) {
+            .profile-main { gap: 5px; }
+            .profile-identity h1 { font-size: 17px; }
+            .profile-actions .button { padding: 0 6px; font-size: 9px; }
+            .order-description strong { max-width: 135px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+        }
+    </style>
+</head>
+<body>
+    <neyang-navbar active="profile" home-view="community"></neyang-navbar>
+
+    <main class="page">
+        <section class="profile-card" aria-labelledby="profile-name">
+            <div class="cover" aria-hidden="true"></div>
+            <div class="profile-main">
+                <div class="avatar" aria-label="ຮູບໂປຣໄຟລ໌">N</div>
+                <div class="profile-identity">
+                    <h1 id="profile-name">Neyang User</h1>
+                    <p>ສະມາຊິກ NEYANG · ນະຄອນຫຼວງວຽງຈັນ</p>
+                </div>
+                <div class="profile-actions">
+                    <button class="button primary" id="edit-profile" type="button">✎ ແກ້ໄຂໂປຣໄຟລ໌</button>
+                    <button class="button" type="button" data-view="store" data-target="products">＋ ເລືອກຊື້</button>
+                </div>
+            </div>
+            <nav class="profile-tabs" aria-label="ສ່ວນໂປຣໄຟລ໌">
+                <button class="profile-tab active" type="button" data-tab="overview">ພາບລວມ</button>
+                <button class="profile-tab" type="button" data-tab="orders">ຄຳສັ່ງຊື້</button>
+                <button class="profile-tab" type="button" data-tab="saved">ລາຍການທີ່ບັນທຶກ</button>
+                <button class="profile-tab" type="button" data-tab="settings">ຕັ້ງຄ່າ</button>
+            </nav>
+        </section>
+
+        <section class="profile-layout tab-panel" data-panel="overview">
+            <article class="panel">
+                <h2>ກ່ຽວກັບຂ້ອຍ</h2>
+                <p class="intro">ຍິນດີຕ້ອນຮັບສູ່ໂປຣໄຟລ໌ NEYANG ຂອງທ່ານ.</p>
+                <div class="info-row"><span class="info-icon">✉</span><span id="profile-email">user@example.com</span></div>
+                <div class="info-row"><span class="info-icon">☎</span><span id="profile-phone">+856 20 XX XXX XXX</span></div>
+                <div class="info-row"><span class="info-icon">⌖</span><span>ນະຄອນຫຼວງວຽງຈັນ</span></div>
+                <div class="stats">
+                    <div class="stat"><strong>3</strong><span>ຄຳສັ່ງຊື້</span></div>
+                    <div class="stat"><strong>2</strong><span>ລາຍການບັນທຶກ</span></div>
+                    <div class="stat"><strong>120</strong><span>ຄະແນນ</span></div>
+                </div>
+            </article>
+            <article class="panel">
+                <h2>ຄຳສັ່ງຊື້ຫຼ້າສຸດ</h2>
+                <div class="order"><span class="order-image">🎧</span><span class="order-description"><strong>ຫູຟັງ Bluetooth ໄຮ້ສາຍ</strong><span>ຄຳສັ່ງ #NY-2026-031 · 08 ພ.ຈ. 2026</span></span><span class="order-status">ຈັດສົ່ງແລ້ວ</span></div>
+                <div class="order"><span class="order-image" style="background:#edf7f1">🧴</span><span class="order-description"><strong>ຂວດນ້ຳເກັບອຸນຫະພູມ</strong><span>ຄຳສັ່ງ #NY-2026-028 · 02 ພ.ຈ. 2026</span></span><span class="order-status pending">ກຳລັງຈັດສົ່ງ</span></div>
+            </article>
+        </section>
+        <section class="panel tab-panel" data-panel="orders" hidden>
+            <h2>ຄຳສັ່ງຊື້ທັງໝົດ</h2>
+            <div class="order"><span class="order-image">🎧</span><span class="order-description"><strong>ຫູຟັງ Bluetooth ໄຮ້ສາຍ</strong><span>ຄຳສັ່ງ #NY-2026-031 · 08 ພ.ຈ. 2026 · ฿ 189</span></span><span class="order-status">ຈັດສົ່ງແລ້ວ</span></div>
+            <div class="order"><span class="order-image" style="background:#edf7f1">🧴</span><span class="order-description"><strong>ຂວດນ້ຳເກັບອຸນຫະພູມ</strong><span>ຄຳສັ່ງ #NY-2026-028 · 02 ພ.ຈ. 2026 · ฿ 240</span></span><span class="order-status pending">ກຳລັງຈັດສົ່ງ</span></div>
+            <div class="order"><span class="order-image" style="background:#fff3ec">👕</span><span class="order-description"><strong>ເສື້ອຍືດຜ້ານຸ້ມ</strong><span>ຄຳສັ່ງ #NY-2026-020 · 25 ຕ.ຄ. 2026 · ฿ 150</span></span><span class="order-status">ຈັດສົ່ງແລ້ວ</span></div>
+        </section>
+        <section class="panel tab-panel" data-panel="saved" hidden><h2>ລາຍການທີ່ບັນທຶກ</h2><p class="empty-tab">ສິນຄ້າທີ່ທ່ານບັນທຶກໄວ້ຈະສະແດງຢູ່ສ່ວນນີ້.</p></section>
+        <section class="panel tab-panel" data-panel="settings" hidden>
+            <h2>ຕັ້ງຄ່າບັນຊີ</h2>
+            <div class="info-row"><span class="info-icon">🔔</span><span>ການແຈ້ງເຕືອນ</span><button class="button" type="button" data-setting="ການແຈ້ງເຕືອນ">ຈັດການ</button></div>
+            <div class="info-row"><span class="info-icon">🔒</span><span>ຄວາມປອດໄພບັນຊີ</span><button class="button" type="button" data-setting="ຄວາມປອດໄພບັນຊີ">ຈັດການ</button></div>
+            <div class="info-row"><span class="info-icon">📍</span><span>ທີ່ຢູ່ຈັດສົ່ງ</span><button class="button" type="button" data-setting="ທີ່ຢູ່ຈັດສົ່ງ">ຈັດການ</button></div>
+        </section>
+    </main>
+    <div class="toast" role="status" aria-live="polite"></div>
+    <script>
+        const toast = document.querySelector(".toast");
+        let toastTimer;
+
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add("visible");
+            window.clearTimeout(toastTimer);
+            toastTimer = window.setTimeout(() => toast.classList.remove("visible"), 2200);
+        }
+
+        function openView(view, target) {
+            if (window.parent === window) {
+                const page = view === "community" ? "./section_home.html" : view === "promotion" ? "./section_promotion.html" : `./index.html${target ? `#${target}` : ""}`;
+                window.location.href = page;
+                return;
+            }
+            const messageOrigin = window.location.origin === "null" ? "*" : window.location.origin;
+            window.parent.postMessage({ type: "neyang-open-view", view, target }, messageOrigin);
+        }
+
+        document.querySelectorAll(".profile-tab").forEach((button) => {
+            button.addEventListener("click", () => {
+                document.querySelectorAll(".profile-tab").forEach((tab) => tab.classList.toggle("active", tab === button));
+                document.querySelectorAll(".tab-panel").forEach((panel) => {
+                    panel.hidden = panel.dataset.panel !== button.dataset.tab;
+                });
+            });
+        });
+
+        document.querySelector("#edit-profile").addEventListener("click", () => {
+            const name = window.prompt("ປ້ອນຊື່ທີ່ຕ້ອງການສະແດງ:", document.querySelector("#profile-name").textContent);
+            if (!name || !name.trim()) return;
+            document.querySelector("#profile-name").textContent = name.trim();
+            showToast("ອັບເດດຊື່ໂປຣໄຟລ໌ແລ້ວ");
+        });
+
+        document.querySelectorAll("[data-setting]").forEach((button) => {
+            button.addEventListener("click", () => showToast(`ເປີດຕັ້ງຄ່າ: ${button.dataset.setting}`));
+        });
+    </script>
+</body>
+</html>

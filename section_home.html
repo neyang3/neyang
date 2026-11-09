@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f5f5f5">
+    <title>NEYANG Community — ໜ້າຫຼັກ</title>
+    <script src="./navbar.js" defer></script>
+    <style>
+        :root {
+            color-scheme: light;
+            --brand: #f85606;
+            --brand-soft: #fff1e8;
+            --ink: #242424;
+            --muted: #757575;
+            --page: #f5f5f5;
+            --line: #ececec;
+            --card: #fff;
+            --shadow: 0 5px 18px rgba(34, 36, 38, .06);
+            font-family: "Noto Sans Lao", "Phetsarath OT", "Leelawadee UI", sans-serif;
+        }
+        * { box-sizing: border-box; }
+        body { margin: 0; background: linear-gradient(180deg,#fff8f4 0,#f5f5f5 260px); color: var(--ink); line-height: 1.6; }
+        button, input { font: inherit; }
+        button { cursor: pointer; }
+        a { color: inherit; text-decoration: none; }
+        .search { display: flex; width: auto; height: 42px; flex: 1; overflow: hidden; align-items: center; gap: 0; border: 2px solid var(--brand); border-radius: 5px; padding: 0; background: white; color: var(--muted); }
+        .search > span { display: none; }
+        .search input { width: 100%; min-width: 0; height: 100%; border: 0; outline: 0; padding: 0 14px; background: transparent; font-size: 14px; }
+        .search button { width: 50px; height: 100%; flex: 0 0 50px; border: 0; background: var(--brand); color: white; font-size: 19px; }
+        .search button:hover { background: #dc4800; }
+        .cart-button { position: relative; display: inline-flex; flex: 0 0 auto; align-items: center; gap: 8px; border: 0; background: transparent; color: #444; font-size: 13px; }
+        .cart-icon { width: 25px; height: 25px; color: var(--brand); }
+        .cart-count { display: grid; min-width: 19px; height: 19px; place-items: center; border-radius: 99px; padding: 0 4px; background: var(--brand); color: white; font-size: 11px; }
+        .avatar { display: grid; width: 38px; height: 38px; flex: 0 0 auto; place-items: center; overflow: hidden; border-radius: 50%; background: linear-gradient(145deg,#9bc5ff,#5269a6); color: white; font-size: 13px; font-weight: 700; }
+        .layout { display: grid; width: min(1280px, calc(100% - 40px)); grid-template-columns: minmax(190px,240px) minmax(0,640px) minmax(210px,280px); justify-content: center; gap: 22px; margin: 24px auto 60px; }
+        .sidebar { position: sticky; top: 84px; align-self: start; }
+        .side-item { display: flex; align-items: center; gap: 12px; border-radius: 8px; padding: 10px 8px; font-size: 13px; font-weight: 600; }
+        .side-item:hover { background: #e4e6e9; }
+        .side-icon { display: grid; width: 36px; height: 36px; place-items: center; border-radius: 50%; background: var(--card); font-size: 18px; }
+        .sidebar-title, .right-title { margin: 20px 8px 8px; color: var(--muted); font-size: 13px; font-weight: 700; }
+        .side-divider { height: 1px; margin: 12px 0; background: #d7d9dd; }
+        .content { min-width: 0; }
+        .feed-heading { display: flex; align-items: end; justify-content: space-between; gap: 12px; margin: 0 2px 14px; }
+        .feed-heading h1 { margin: 0; font-size: 21px; line-height: 1.35; }
+        .feed-heading p { margin: 4px 0 0; color: var(--muted); font-size: 11px; }
+        .feed-heading .feed-mark { display: grid; width: 42px; height: 42px; flex: 0 0 auto; place-items: center; border: 1px solid #ffdfcf; border-radius: 13px; background: #fff; color: var(--brand); font-size: 20px; box-shadow: var(--shadow); }
+        .stories { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 10px; margin-bottom: 16px; }
+        .story { position: relative; display: flex; min-height: 164px; align-items: flex-end; overflow: hidden; border: 1px solid rgba(30,30,30,.05); border-radius: 13px; background: var(--story-bg,linear-gradient(150deg,#87a9d8,#394d78)); box-shadow: var(--shadow); color: white; transition: filter .15s,transform .15s; }
+        .story:hover { filter: brightness(.96); transform: translateY(-2px); }
+        .story::after { position: absolute; inset: 35% 0 0; background: linear-gradient(transparent,rgba(0,0,0,.72)); content: ""; }
+        .story-name { position: relative; z-index: 1; padding: 10px 9px; font-size: 11px; font-weight: 700; }
+        .story-avatar { position: absolute; z-index: 2; top: 10px; left: 10px; display: grid; width: 36px; height: 36px; place-items: center; border: 3px solid var(--brand); border-radius: 50%; background: white; color: var(--brand); font-size: 12px; font-weight: 800; }
+        .story.add-story { align-items: flex-end; justify-content: center; background: linear-gradient(180deg,#fff 0%,#fff5ef 100%); color: var(--ink); text-align: center; }
+        .story.add-story::after { display: none; }
+        .add-story .story-name { padding-bottom: 9px; }
+        .add-story-icon { position: absolute; bottom: 34px; display: grid; width: 40px; height: 40px; place-items: center; border: 4px solid white; border-radius: 50%; background: var(--brand); color: white; font-size: 25px; box-shadow: 0 3px 8px rgba(248,86,6,.25); }
+        .card { border: 1px solid rgba(34,36,38,.06); border-radius: 13px; background: var(--card); box-shadow: var(--shadow); }
+        .composer { margin-bottom: 16px; padding: 15px 16px 10px; }
+        .composer-top, .post-header { display: flex; align-items: center; gap: 10px; }
+        .composer-input { height: 42px; flex: 1; border: 0; border-radius: 22px; outline: 0; padding: 0 16px; background: var(--page); color: var(--muted); text-align: left; font-size: 13px; }
+        .composer-input:hover { background: #e4e6e9; }
+        .composer-divider { height: 1px; margin: 12px 0 6px; background: var(--line); }
+        .composer-actions { display: flex; justify-content: space-around; }
+        .composer-action { display: flex; align-items: center; gap: 7px; border: 0; border-radius: 6px; padding: 8px 6px; background: transparent; color: var(--muted); font-size: 11px; font-weight: 700; }
+        .composer-action:hover { background: var(--page); }
+        .feed-post { margin-bottom: 16px; padding: 16px; }
+        .post-author { font-size: 13px; font-weight: 700; }
+        .post-time { color: var(--muted); font-size: 10px; }
+        .post-menu { margin-left: auto; border: 0; border-radius: 50%; padding: 5px 9px; background: transparent; color: var(--muted); font-size: 19px; }
+        .post-menu:hover { background: var(--page); }
+        .post-text { margin: 13px 0; font-size: 13px; line-height: 1.8; }
+        .post-art { display: grid; min-height: 230px; aspect-ratio: 1.8; place-items: center; overflow: hidden; border: 1px solid rgba(30,30,30,.04); border-radius: 10px; background: radial-gradient(circle at 22% 25%,rgba(255,255,255,.7) 0 7%,transparent 7.5%),radial-gradient(circle at 78% 72%,rgba(255,255,255,.3) 0 13%,transparent 13.5%),linear-gradient(140deg,#ffe8d9,#ffb787 55%,#f8754f); font-size: clamp(72px,10vw,112px); }
+        .post-art.art-blue { background: radial-gradient(circle at 22% 25%,rgba(255,255,255,.7) 0 7%,transparent 7.5%),radial-gradient(circle at 78% 72%,rgba(255,255,255,.3) 0 13%,transparent 13.5%),linear-gradient(140deg,#e1f3ff,#8ac4ed 55%,#547dc8); }
+        .post-art.art-green { background: radial-gradient(circle at 22% 25%,rgba(255,255,255,.7) 0 7%,transparent 7.5%),radial-gradient(circle at 78% 72%,rgba(255,255,255,.3) 0 13%,transparent 13.5%),linear-gradient(140deg,#e4f6e5,#9bd3a7 55%,#4a9a78); }
+        .post-stats { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; color: var(--muted); font-size: 11px; }
+        .reaction-icons { color: var(--brand); font-size: 13px; }
+        .post-actions { display: grid; grid-template-columns: repeat(3,1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 4px 0; }
+        .post-action { display: flex; min-height: 38px; align-items: center; justify-content: center; gap: 7px; border: 0; border-radius: 7px; padding: 8px 4px; background: transparent; color: var(--muted); font-size: 12px; font-weight: 700; transition: background .15s,color .15s; }
+        .post-action:hover { background: var(--page); }
+        .post-action.is-liked { color: var(--brand); }
+        .action-icon { width: 18px; height: 18px; flex: 0 0 auto; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+        .like-button.is-liked .action-icon { fill: currentColor; }
+        .comment-form { display: flex; gap: 8px; margin-top: 10px; }
+        .comment-form input { min-width: 0; height: 36px; flex: 1; border: 0; border-radius: 20px; outline: 0; padding: 0 13px; background: var(--page); font-size: 11px; }
+        .comment-form button { border: 0; background: transparent; color: var(--brand); font-size: 12px; font-weight: 700; }
+        .comment-list { display: grid; gap: 7px; margin-top: 9px; }
+        .comment { width: fit-content; max-width: 100%; border-radius: 16px; padding: 7px 11px; background: var(--page); font-size: 11px; }
+        .comment strong { margin-right: 5px; }
+        .right-card { margin-bottom: 14px; border: 1px solid rgba(34,36,38,.06); border-radius: 13px; padding: 15px; background: rgba(255,255,255,.88); box-shadow: var(--shadow); }
+        .right-title { margin: 0 0 12px; }
+        .contact { display: flex; align-items: center; gap: 10px; padding: 8px 0; font-size: 12px; font-weight: 600; }
+        .contact .avatar, .suggestion .avatar { width: 34px; height: 34px; }
+        .online { position: relative; }
+        .online::after { position: absolute; right: 0; bottom: 0; width: 9px; height: 9px; border: 2px solid white; border-radius: 50%; background: #31a24c; content: ""; }
+        .event { display: flex; align-items: center; gap: 10px; font-size: 11px; }
+        .event-date { display: grid; width: 39px; height: 43px; align-content: center; border-radius: 6px; background: #fce8e2; color: #e34d30; text-align: center; }
+        .event-date strong { font-size: 16px; line-height: 1.1; }
+        .event-date span { font-size: 9px; }
+        .event p { margin: 0; }
+        .suggestion { display: flex; align-items: center; gap: 9px; font-size: 11px; }
+        .suggestion button { margin-left: auto; border: 0; border-radius: 5px; padding: 6px 9px; background: var(--brand-soft); color: var(--brand); font-size: 10px; font-weight: 700; }
+        .toast { position: fixed; z-index: 10; right: 18px; bottom: 18px; border-radius: 7px; padding: 11px 15px; background: #242526; color: white; font-size: 12px; opacity: 0; pointer-events: none; transform: translateY(8px); transition: opacity .2s,transform .2s; }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        @media (max-width: 980px) {
+            .layout { grid-template-columns: 190px minmax(0,640px); gap: 18px; }
+            .right-sidebar { display: none; }
+        }
+        @media (max-width: 900px) {
+            body { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
+            .search { height: 40px; }
+            .search input { font-size: 13px; }
+            .cart-button { margin-left: auto; }
+            .layout { width: min(100% - 20px,640px); grid-template-columns: minmax(0,1fr); gap: 0; margin-top: 16px; }
+            .left-sidebar { display: none; }
+            .stories { grid-template-columns: repeat(5,minmax(70px,1fr)); overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+            .stories::-webkit-scrollbar { display: none; }
+            .feed-heading { margin-bottom: 12px; }
+            .feed-heading h1 { font-size: 19px; }
+            .story { min-height: 132px; }
+            .story-avatar { top: 8px; left: 8px; width: 32px; height: 32px; }
+            .story-name { font-size: 10px; }
+            .post-art { min-height: 190px; }
+            .post-text { font-size: 12px; }
+            .feed-post { padding: 13px; }
+            .composer { padding: 12px; }
+        }
+        @media (max-width: 600px) {
+            .search { height: 38px; }
+            .search input { font-size: 12px; }
+            .cart-button { font-size: 0; }
+            .cart-icon { width: 23px; }
+            .cart-count { position: absolute; top: -5px; right: -7px; }
+            .feed-heading .feed-mark { width: 38px; height: 38px; }
+            .stories { grid-template-columns: repeat(5,minmax(68px,1fr)); gap: 7px; }
+        }
+        @media (max-width: 380px) {
+            .search input { font-size: 11px; }
+            .stories { grid-template-columns: repeat(5,minmax(64px,1fr)); gap: 6px; }
+            .story { min-height: 116px; }
+            .post-art { min-height: 155px; }
+            .composer-action { gap: 4px; font-size: 10px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+        }
+    </style>
+</head>
+<body>
+    <neyang-navbar active="community" home-view="community">
+        <form slot="search" class="search" id="feed-search-form" role="search">
+            <input id="feed-search" type="search" placeholder="ຄົ້ນຫາໃນ Community" aria-label="ຄົ້ນຫາໃນ Community">
+            <button type="submit" aria-label="ຄົ້ນຫາ">⌕</button>
+        </form>
+        <button slot="actions" class="cart-button" type="button" aria-label="ກະຕ່າສິນຄ້າ">
+            <svg class="cart-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.5a2 2 0 0 0 2-1.6L21 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
+            ກະຕ່າ <span class="cart-count" aria-live="polite">0</span>
+        </button>
+    </neyang-navbar>
+
+    <main class="layout">
+        <aside class="sidebar left-sidebar" aria-label="ເມນູທາງລັດ">
+            <a class="side-item" href="#composer"><span class="avatar">N</span> Neyang User</a>
+            <div class="side-divider"></div>
+            <div class="sidebar-title">ທາງລັດຂອງທ່ານ</div>
+            <a class="side-item" href="#feed"><span class="side-icon">👥</span> ກຸ່ມຂອງຂ້ອຍ</a>
+            <a class="side-item" href="#stories"><span class="side-icon">🕘</span> ຄວາມຊົງຈຳ</a>
+            <a class="side-item" href="#contacts"><span class="side-icon">🔖</span> ລາຍການທີ່ບັນທຶກ</a>
+            <a class="side-item" href="#composer"><span class="side-icon">📅</span> ກິດຈະກຳ</a>
+            <a class="side-item" href="#feed"><span class="side-icon">🛍️</span> ຕະຫຼາດ</a>
+        </aside>
+
+        <section class="content" id="feed" aria-label="ຂ່າວສານ">
+            <header class="feed-heading">
+                <div>
+                    <h1>ຊຸມຊົນ NEYANG</h1>
+                    <p>ແບ່ງປັນຊ່ວງເວລາດີໆ ແລະພົບປະໝູ່ໃໝ່</p>
+                </div>
+                <span class="feed-mark" aria-hidden="true">✦</span>
+            </header>
+
+            <div class="stories" id="stories">
+                <a class="story add-story" href="#composer"><span class="add-story-icon">+</span><span class="story-name">ສ້າງ Story</span></a>
+                <a class="story" href="#post-1" style="--story-bg:linear-gradient(155deg,#ffcc80,#e36c57 55%,#7d4879)"><span class="story-avatar">ມ</span><span class="story-name">ມະນີ</span></a>
+                <a class="story" href="#post-2" style="--story-bg:linear-gradient(155deg,#9bd9dc,#43799e 55%,#33456e)"><span class="story-avatar">ສ</span><span class="story-name">ສົມຊາຍ</span></a>
+                <a class="story" href="#post-3" style="--story-bg:linear-gradient(155deg,#f6c0c5,#bc6c91 55%,#583e75)"><span class="story-avatar">ດ</span><span class="story-name">ດາລາ</span></a>
+                <a class="story" href="#post-1" style="--story-bg:linear-gradient(155deg,#a4d5a5,#4c9b83 55%,#315677)"><span class="story-avatar">ທ</span><span class="story-name">ທອງດີ</span></a>
+            </div>
+
+            <section class="card composer" id="composer" aria-label="ສ້າງໂພສ">
+                <div class="composer-top"><span class="avatar">N</span><button class="composer-input" id="open-composer" type="button">ມື້ນີ້ທ່ານຄິດຫຍັງຢູ່?</button></div>
+                <div class="composer-divider"></div>
+                <div class="composer-actions">
+                    <button class="composer-action" type="button" data-compose="ກຳລັງ Live">🔴 <span>Live</span></button>
+                    <button class="composer-action" type="button" data-compose="ຮູບພາບ / ວິດີໂອ">🖼️ <span>ຮູບພາບ</span></button>
+                    <button class="composer-action" type="button" data-compose="ກຳລັງຮູ້ສຶກ">😊 <span>ຄວາມຮູ້ສຶກ</span></button>
+                </div>
+            </section>
+
+            <div id="post-list">
+                <article class="card feed-post" id="post-1" data-search="ມະນີ ກາເຟ ວັນພັກ">
+                    <header class="post-header"><span class="avatar" style="background:linear-gradient(145deg,#f4a261,#be5a49)">ມ</span><div><div class="post-author">ມະນີ ວັນດີ</div><div class="post-time">2 ຊົ່ວໂມງ · 🌐</div></div><button class="post-menu" type="button" aria-label="ເມນູໂພສ">···</button></header>
+                    <p class="post-text">ມື້ພັກກັບກາເຟຈອກໂປດ ☕ ຂໍໃຫ້ທຸກຄົນມີມື້ທີ່ດີເດີ!</p><div class="post-art" role="img" aria-label="ຮູບກາເຟໃນມື້ພັກ">☕</div>
+                    <div class="post-stats"><span><span class="reaction-icons">🔵 ❤️</span> <span class="like-count">24</span></span><span><span class="comment-count">8</span> ຄຳເຫັນ · 2 ແຊຣ໌</span></div>
+                    <div class="post-actions"><button class="post-action like-button" type="button" aria-pressed="false"><svg class="action-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10v11H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3Zm0 0 4-7a3 3 0 0 1 2 3v4h5.5a3 3 0 0 1 2.9 3.8l-1.6 6A3 3 0 0 1 16.9 22H7"/></svg><span class="action-label">ມັກ</span></button><button class="post-action comment-focus" type="button"><svg class="action-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H6l-4 3v-10.5A7.5 7.5 0 0 1 9.5 4h3A7.5 7.5 0 0 1 20 11.5Z"/><path d="M8 11h.01M12 11h.01M16 11h.01"/></svg><span>ຄຳເຫັນ</span></button><button class="post-action share-button" type="button"><svg class="action-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.7 6.6-4.4m-6.6 7 6.6 4.4"/></svg><span>ແຊຣ໌</span></button></div>
+                    <div class="comment-list"></div><form class="comment-form"><input type="text" aria-label="ຂຽນຄຳເຫັນ" placeholder="ຂຽນຄຳເຫັນ..."><button type="submit">ສົ່ງ</button></form>
+                </article>
+                <article class="card feed-post" id="post-2" data-search="ສົມຊາຍ ທ່ຽວ ທຳມະຊາດ">
+                    <header class="post-header"><span class="avatar" style="background:linear-gradient(145deg,#7cc9d0,#416d9a)">ສ</span><div><div class="post-author">ສົມຊາຍ ຮັກການທ່ຽວ</div><div class="post-time">5 ຊົ່ວໂມງ · 🌐</div></div><button class="post-menu" type="button" aria-label="ເມນູໂພສ">···</button></header>
+                    <p class="post-text">ອາກາດດີ ວິວງາມ ໄດ້ອອກມາສູດອາກາດສົດໆແລ້ວຮູ້ສຶກສົດຊື່ນຫຼາຍ 🌿</p><div class="post-art art-blue" role="img" aria-label="ຮູບພູເຂົາ ແລະທຳມະຊາດ">🏞️</div>
+                    <div class="post-stats"><span><span class="reaction-icons">🔵 ❤️</span> <span class="like-count">56</span></span><span><span class="comment-count">12</span> ຄຳເຫັນ · 5 ແຊຣ໌</span></div>
+                    <div class="post-actions"><button class="post-action like-button" type="button" aria-pressed="false"><svg class="action-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10v11H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3Zm0 0 4-7a3 3 0 0 1 2 3v4h5.5a3 3 0 0 1 2.9 3.8l-1.6 6A3 3 0 0 1 16.9 22H7"/></svg><span class="action-label">ມັກ</span></button><button class="post-action comment-focus" type="button"><svg class="action-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H6l-4 3v-10.5A7.5 7.5 0 0 1 9.5 4h3A7.5 7.5 0 0 1 20 11.5Z"/><path d="M8 11h.01M12 11h.01M16 11h.01"/></svg><span>ຄຳເຫັນ</span></button><button class="post-action share-button" type="button"><svg class="action-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.7 6.6-4.4m-6.6 7 6.6 4.4"/></svg><span>ແຊຣ໌</span></button></div>
+                    <div class="comment-list"></div><form class="comment-form"><input type="text" aria-label="ຂຽນຄຳເຫັນ" placeholder="ຂຽນຄຳເຫັນ..."><button type="submit">ສົ່ງ</button></form>
+                </article>
+                <article class="card feed-post" id="post-3" data-search="ດາລາ ອາຫານ ເຂົ້າປຽກ">
+                    <header class="post-header"><span class="avatar" style="background:linear-gradient(145deg,#ee9bb2,#925b9a)">ດ</span><div><div class="post-author">ດາລາ ແບ່ງປັນມື້ນີ້</div><div class="post-time">ມື້ວານ · 🌐</div></div><button class="post-menu" type="button" aria-label="ເມນູໂພສ">···</button></header>
+                    <p class="post-text">ມື້ນີ້ເຮັດເຂົ້າປຽກກິນເອງ ອຸ່ນໆແຊບຫຼາຍ 😋 ໃຜມັກເມນູນີ້ແດ່?</p><div class="post-art art-green" role="img" aria-label="ຮູບອາຫານ">🍜</div>
+                    <div class="post-stats"><span><span class="reaction-icons">🔵 ❤️</span> <span class="like-count">39</span></span><span><span class="comment-count">6</span> ຄຳເຫັນ · 1 ແຊຣ໌</span></div>
+                    <div class="post-actions"><button class="post-action like-button" type="button" aria-pressed="false"><svg class="action-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10v11H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3Zm0 0 4-7a3 3 0 0 1 2 3v4h5.5a3 3 0 0 1 2.9 3.8l-1.6 6A3 3 0 0 1 16.9 22H7"/></svg><span class="action-label">ມັກ</span></button><button class="post-action comment-focus" type="button"><svg class="action-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H6l-4 3v-10.5A7.5 7.5 0 0 1 9.5 4h3A7.5 7.5 0 0 1 20 11.5Z"/><path d="M8 11h.01M12 11h.01M16 11h.01"/></svg><span>ຄຳເຫັນ</span></button><button class="post-action share-button" type="button"><svg class="action-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.7 6.6-4.4m-6.6 7 6.6 4.4"/></svg><span>ແຊຣ໌</span></button></div>
+                    <div class="comment-list"></div><form class="comment-form"><input type="text" aria-label="ຂຽນຄຳເຫັນ" placeholder="ຂຽນຄຳເຫັນ..."><button type="submit">ສົ່ງ</button></form>
+                </article>
+            </div>
+        </section>
+
+        <aside class="sidebar right-sidebar" id="contacts">
+            <section class="card right-card"><h2 class="right-title">ກິດຈະກຳທີ່ຈະມາເຖິງ</h2><div class="event"><div class="event-date"><strong>18</strong><span>ພ.ຈ.</span></div><p><strong>ຕະຫຼາດຊຸມຊົນ</strong><br>ວັນເສົາ · 9:00 ໂມງ</p></div></section>
+            <section class="card right-card"><h2 class="right-title">ໝູ່ທີ່ອາດຮູ້ຈັກ</h2><div class="suggestion"><span class="avatar" style="background:linear-gradient(145deg,#7bc9a4,#35818b)">ທ</span><span>ທອງດີ ສີໃສ</span><button class="friend-button" type="button">ເພີ່ມ</button></div><div class="suggestion" style="margin-top:12px"><span class="avatar" style="background:linear-gradient(145deg,#f1bb75,#ce6f6b)">ຄ</span><span>ຄຳແພງ ວິໄລ</span><button class="friend-button" type="button">ເພີ່ມ</button></div></section>
+            <section class="card right-card"><h2 class="right-title">ຜູ້ທີ່ກຳລັງອອນລາຍ</h2><div class="contact"><span class="avatar online" style="background:linear-gradient(145deg,#f4a261,#be5a49)">ມ</span> ມະນີ ວັນດີ</div><div class="contact"><span class="avatar online" style="background:linear-gradient(145deg,#7cc9d0,#416d9a)">ສ</span> ສົມຊາຍ</div><div class="contact"><span class="avatar online" style="background:linear-gradient(145deg,#ee9bb2,#925b9a)">ດ</span> ດາລາ</div></section>
+        </aside>
+    </main>
+    <div class="toast" role="status" aria-live="polite"></div>
+    <script>
+        const toast = document.querySelector(".toast");
+        let toastTimer;
+
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add("show");
+            window.clearTimeout(toastTimer);
+            toastTimer = window.setTimeout(() => toast.classList.remove("show"), 2200);
+        }
+
+        function bindPost(post) {
+            post.querySelector(".like-button").addEventListener("click", (event) => {
+                const button = event.currentTarget;
+                const liked = button.classList.toggle("is-liked");
+                const count = post.querySelector(".like-count");
+                count.textContent = Number(count.textContent) + (liked ? 1 : -1);
+                button.setAttribute("aria-pressed", String(liked));
+                button.querySelector(".action-label").textContent = liked ? "ມັກແລ້ວ" : "ມັກ";
+            });
+            post.querySelector(".comment-focus").addEventListener("click", () => post.querySelector(".comment-form input").focus());
+            post.querySelector(".comment-form").addEventListener("submit", (event) => {
+                event.preventDefault();
+                const form = event.currentTarget;
+                const input = form.querySelector("input");
+                const message = input.value.trim();
+                if (!message) return;
+                const comment = document.createElement("div");
+                comment.className = "comment";
+                const author = document.createElement("strong");
+                author.textContent = "ທ່ານ";
+                comment.append(author, document.createTextNode(message));
+                post.querySelector(".comment-list").append(comment);
+                const count = post.querySelector(".comment-count");
+                count.textContent = Number(count.textContent) + 1;
+                input.value = "";
+            });
+            post.querySelector(".share-button").addEventListener("click", async () => {
+                try {
+                    if (navigator.share) {
+                        await navigator.share({ title: "NEYANG Community", url: `${location.href.split("#")[0]}#${post.id}` });
+                    } else {
+                        await navigator.clipboard.writeText(`${location.href.split("#")[0]}#${post.id}`);
+                        showToast("ຄັດລອກລິ້ງໂພສແລ້ວ");
+                    }
+                } catch (error) {
+                    if (error.name !== "AbortError") {
+                        console.error("Could not share post.", error);
+                        showToast("ບໍ່ສາມາດແຊຣ໌ໂພສໄດ້");
+                    }
+                }
+            });
+        }
+
+        document.querySelectorAll(".feed-post").forEach(bindPost);
+
+        document.querySelector("#open-composer").addEventListener("click", () => {
+            const message = window.prompt("ມື້ນີ້ທ່ານຄິດຫຍັງຢູ່?");
+            if (!message || !message.trim()) return;
+
+            const post = document.createElement("article");
+            post.className = "card feed-post";
+            post.dataset.search = message.trim().toLocaleLowerCase();
+            const header = document.createElement("header");
+            header.className = "post-header";
+            header.innerHTML = '<span class="avatar">N</span><div><div class="post-author">ທ່ານ</div><div class="post-time">ດຽວນີ້ · 🌐</div></div>';
+            const text = document.createElement("p");
+            text.className = "post-text";
+            text.textContent = message.trim();
+            const stats = document.createElement("div");
+            stats.className = "post-stats";
+            stats.innerHTML = '<span><span class="reaction-icons">🔵</span> <span class="like-count">0</span></span><span><span class="comment-count">0</span> ຄຳເຫັນ</span>';
+            const actions = document.createElement("div");
+            actions.className = "post-actions";
+            actions.innerHTML = '<button class="post-action like-button" type="button" aria-pressed="false"><svg class="action-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10v11H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3Zm0 0 4-7a3 3 0 0 1 2 3v4h5.5a3 3 0 0 1 2.9 3.8l-1.6 6A3 3 0 0 1 16.9 22H7"/></svg><span class="action-label">ມັກ</span></button><button class="post-action comment-focus" type="button"><svg class="action-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H6l-4 3v-10.5A7.5 7.5 0 0 1 9.5 4h3A7.5 7.5 0 0 1 20 11.5Z"/><path d="M8 11h.01M12 11h.01M16 11h.01"/></svg><span>ຄຳເຫັນ</span></button><button class="post-action share-button" type="button"><svg class="action-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.7 6.6-4.4m-6.6 7 6.6 4.4"/></svg><span>ແຊຣ໌</span></button>';
+            const comments = document.createElement("div");
+            comments.className = "comment-list";
+            const form = document.createElement("form");
+            form.className = "comment-form";
+            form.innerHTML = '<input type="text" aria-label="ຂຽນຄຳເຫັນ" placeholder="ຂຽນຄຳເຫັນ..."><button type="submit">ສົ່ງ</button>';
+            post.append(header, text, stats, actions, comments, form);
+            document.querySelector("#post-list").prepend(post);
+            bindPost(post);
+            showToast("ແບ່ງປັນໂພສແລ້ວ");
+        });
+
+        document.querySelectorAll("[data-compose]").forEach((button) => {
+            button.addEventListener("click", () => showToast(`ເລືອກ: ${button.dataset.compose}`));
+        });
+        document.querySelectorAll(".friend-button").forEach((button) => {
+            button.addEventListener("click", () => {
+                button.textContent = "ສົ່ງແລ້ວ";
+                button.disabled = true;
+            });
+        });
+        window.addEventListener("message", (event) => {
+            if (event.source !== window.parent || event.origin !== window.location.origin) return;
+            if (event.data?.type === "neyang-scroll") {
+                const target = event.data.target === "profile" ? "composer" : event.data.target;
+                document.getElementById(target)?.scrollIntoView({ behavior: "smooth" });
+            }
+        });
+        document.querySelector("#feed-search").addEventListener("input", (event) => {
+            const query = event.target.value.trim().toLocaleLowerCase();
+            document.querySelectorAll(".feed-post").forEach((post) => {
+                post.hidden = Boolean(query) && !`${post.dataset.search || ""} ${post.textContent}`.toLocaleLowerCase().includes(query);
+            });
+        });
+        document.querySelector("#feed-search-form").addEventListener("submit", (event) => {
+            event.preventDefault();
+        });
+    </script>
+</body>
+</html>
